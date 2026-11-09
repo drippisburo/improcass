@@ -11,9 +11,9 @@
 #include "stb_image_write.h"
 
 using namespace std;
-using namespace Eigen;
+using namespace Eigen;    //
 
-int main(void) {
+int main() {
     int LDAPCA = 0; // 1 means lda is applied, 0 means only pca
     float bright_threshold = 1.52f; //this times mean frame is threshold for meaningful brightness
     int minarea = 12; // blobs smaller ignored 
@@ -202,7 +202,6 @@ int main(void) {
     }
     cout << "pooled BA " << 100 * pba / 3 << endl;
 
-
-
+    
     return 0;
 }
