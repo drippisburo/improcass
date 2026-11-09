@@ -13,6 +13,8 @@
 using namespace std;
 using namespace Eigen;
 
+int x = 3;
+
 int main(void) {
     int LDAPCA = 0; // 1 means lda is applied, 0 means only pca
     float bright_threshold = 1.52f; //this times mean frame is threshold for meaningful brightness
