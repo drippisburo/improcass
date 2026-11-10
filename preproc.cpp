@@ -11,7 +11,7 @@
 #include "stb_image_write.h"
 
 using namespace std;
-using namespace Eigen;    //
+using namespace Eigen;   
 
 int main() {
     int LDAPCA = 0; // 1 means lda is applied, 0 means only pca
