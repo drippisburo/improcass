@@ -166,10 +166,10 @@ int main() {
 
         for ( int npatch = 0; npatch < Ztest.cols(); npatch++){
             int maxim = 1;
-            double scoreone = mahanobianscoreone(classstats[1], Ztest.col(npatch) , bias[1] );
-            double scoretwo = mahanobianscoreone(classstats[2], Ztest.col(npatch) , bias[2] );
+            double scoreone = mahanobianscore(classstats[1], Ztest.col(npatch) , bias[1] );
+            double scoretwo = mahanobianscore(classstats[2], Ztest.col(npatch) , bias[2] );
             if (scoretwo > scoreone){maxim = 2;}
-            double scorezero = mahanobianscoreone(classstats[0], Ztest.col(npatch) , bias[0] );
+            double scorezero = mahanobianscore(classstats[0], Ztest.col(npatch) , bias[0] );
             if (scorezero > scoreone && scorezero > scoretwo){maxim = 0;}
             assigned.push_back(maxim);
             conf[test_data[npatch].label][maxim]++;

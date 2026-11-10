@@ -704,7 +704,7 @@ vector<Eigenstuff> adjeigvals(vector<Eigenstuff> &eigstuff, int choice, int nots
     return eigstuff;
 }
 
-double mahanobianscoreone(const Eigenstuff &eigclass, const VectorXf &x, float bias){
+double mahanobianscore(const Eigenstuff &eigclass, const VectorXf &x, float bias){
     VectorXf xave = x - eigclass.mean;
     VectorXf z = eigclass.eigvects.transpose() * xave;
     double sum = 0;
@@ -726,4 +726,50 @@ VectorXf zscore(VectorXf x, int size, int margin) {
     for (int i = 0; i < size * size; i++)
         x(i) = incircle(i % size, i / size, size, margin) ? (x(i) - mu) / sd : 0;
     return x;
+}
+
+// nnclosest neighbour, output is an int = 0 clutter, 1 person, 2 clutter
+int nnclass( const VectorXf &Ztest, const MatrixXf &Xtest,const vector<Patch> &train_data, int n){
+    vector<int> zclasses;
+    
+    for (int colx = 0; colx <Xtest.cols(); colx++){
+        int distsq = (Ztest - Xtest.col(colx)).squaredNorm();
+        zclasses.push_back(distsq);
+    }
+    vector<int> zcl_copy = zclasses;
+    vector<int> scores = {0 , 0 , 0};
+    vector<float> closest = {INFINITY, INFINITY, INFINITY};
+    for ( int i = 0; i<n ; i++){
+        auto it = min_element(zcl_copy.begin(), zcl_copy.end());
+        int idx = (int)(it - zcl_copy.begin());
+        zcl_copy[idx] = INFINITY;
+        if (train_data[idx].label == 1) {
+            scores[1]++;
+            if ( zclasses[idx] < closest[1]) closest[1] =zclasses[idx];
+        }
+        else if(train_data[idx].label == 2) {
+            scores[2]++;
+            if ( zclasses[idx] < closest[2]) closest[2] =zclasses[idx];
+        }
+        else {
+            scores[0]++;
+            if ( zclasses[idx] < closest[0]) closest[0] =zclasses[idx];
+        }
+    }
+    int max = -1;
+    int foundcl = -1;
+    for ( int i = 0; i < 3; i++){
+        if (scores[i] > max) {max = scores[i]; foundcl = i;}
+        if ( scores[i] == max) {
+            int min = INFINITY;
+            int where = -1;
+            for ( int j = 0; j < i; j++){
+                if ( scores[j] == max){
+                    if (closest[j] < min){ min = closest[j]; where = j;}
+                }
+            }
+            foundcl = where;
+        }
+    }
+    return foundcl;
 }

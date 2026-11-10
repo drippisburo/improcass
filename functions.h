@@ -56,6 +56,6 @@ std::vector<Patch> combinebuckets(const std::vector<std::vector<Patch>> &buckets
 Eigenstuff LDA(Eigenstuff eigkept, std::vector<Patch> patches);
 std::vector<unsigned char> mirrorpatch(const std::vector<unsigned char> &patch, int size, int margin, bool leftright);
 std::vector<Eigenstuff> mdistclass(Eigenstuff eigklda, std::vector<Patch> patches);
-double mahanobianscoreone(const Eigenstuff &eigclass, const Eigen::VectorXf &x, float bias);
+double mahanobianscore(const Eigenstuff &eigclass, const Eigen::VectorXf &x, float bias);
 std::vector<Eigenstuff> adjeigvals(std::vector<Eigenstuff> &eigstuff, int choice, int small);
 Eigen::VectorXf zscore(Eigen::VectorXf x, int size, int margin);
