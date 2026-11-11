@@ -59,3 +59,4 @@ std::vector<Eigenstuff> mdistclass(Eigenstuff eigklda, std::vector<Patch> patche
 double mahanobianscore(const Eigenstuff &eigclass, const Eigen::VectorXf &x, float bias);
 std::vector<Eigenstuff> adjeigvals(std::vector<Eigenstuff> &eigstuff, int choice, int small);
 Eigen::VectorXf zscore(Eigen::VectorXf x, int size, int margin);
+int nnclass(const Eigen::VectorXf &Ztest, const Eigen::MatrixXf &Xtest, const std::vector<Patch> &train_data, int n);

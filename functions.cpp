@@ -730,13 +730,14 @@ VectorXf zscore(VectorXf x, int size, int margin) {
 
 // nnclosest neighbour, output is an int = 0 clutter, 1 person, 2 clutter
 int nnclass( const VectorXf &Ztest, const MatrixXf &Xtest,const vector<Patch> &train_data, int n){
-    vector<int> zclasses;
-    
+    vector<float> zclasses;
+
     for (int colx = 0; colx <Xtest.cols(); colx++){
-        int distsq = (Ztest - Xtest.col(colx)).squaredNorm();
+        float distsq = (Ztest - Xtest.col(colx)).squaredNorm();
         zclasses.push_back(distsq);
     }
-    vector<int> zcl_copy = zclasses;
+    n = min(n, (int)zclasses.size());
+    vector<float> zcl_copy = zclasses;
     vector<int> scores = {0 , 0 , 0};
     vector<float> closest = {INFINITY, INFINITY, INFINITY};
     for ( int i = 0; i<n ; i++){
@@ -761,9 +762,9 @@ int nnclass( const VectorXf &Ztest, const MatrixXf &Xtest,const vector<Patch> &t
     for ( int i = 0; i < 3; i++){
         if (scores[i] > max) {max = scores[i]; foundcl = i;}
         if ( scores[i] == max) {
-            int min = INFINITY;
+            float min = INFINITY;
             int where = -1;
-            for ( int j = 0; j < i; j++){
+            for ( int j = 0; j <= i; j++){
                 if ( scores[j] == max){
                     if (closest[j] < min){ min = closest[j]; where = j;}
                 }

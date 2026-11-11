@@ -14,7 +14,7 @@ using namespace std;
 using namespace Eigen;   
 
 int main() {
-    int LDAPCA = 0; // 1 means lda is applied, 0 means only pca
+    int LDAPCA = 1; // 1 means lda is applied, 0 means only pca
     float bright_threshold = 1.52f; //this times mean frame is threshold for meaningful brightness
     int minarea = 12; // blobs smaller ignored 
     int maxarea = 500; // blobs larger ignored
@@ -31,7 +31,8 @@ int main() {
     int notsmall = 20; //how many eigvalues are not consider small
     int choice_eigvals = 0; // 0 means keep the biggest eigvals from the smaller ones
                             // 1 means keep the average
-
+    int classifier = 1; // 0 = Mahalanobis, 1 = k-NN
+    int k = 5;          // k for k nearest neighbour
 
     /*string image = "1_60_80_0_00715.jpg";*/ // for specific one image
     string folderim = "./normal_xml/JPEGImages/";
@@ -159,19 +160,25 @@ int main() {
         if (LDAPCA == 1) Ztest = eiglda.eigvects.transpose() * Ytest;   // 2 x ntest
         else Ztest = Ytest;
 
-        vector<int> assigned;
+        const MatrixXf &Ztrain = (LDAPCA == 1) ? eiglda.Y : eigkept.Y;   // same space as Ztest
+
         int conf[3][3] = {};
         float bias[3];
         for (int c = 0; c < 3; c++) bias[c] = -0.5f * classstats[c].eigvals.array().log().sum();
 
+        int maxim;
         for ( int npatch = 0; npatch < Ztest.cols(); npatch++){
-            int maxim = 1;
-            double scoreone = mahanobianscore(classstats[1], Ztest.col(npatch) , bias[1] );
-            double scoretwo = mahanobianscore(classstats[2], Ztest.col(npatch) , bias[2] );
-            if (scoretwo > scoreone){maxim = 2;}
-            double scorezero = mahanobianscore(classstats[0], Ztest.col(npatch) , bias[0] );
-            if (scorezero > scoreone && scorezero > scoretwo){maxim = 0;}
-            assigned.push_back(maxim);
+            if (classifier == 1) {
+                maxim = nnclass(Ztest.col(npatch), Ztrain, train_data, k);
+            }
+            else{
+                maxim = 1;
+                double scoreone = mahanobianscore(classstats[1], Ztest.col(npatch) , bias[1] );
+                double scoretwo = mahanobianscore(classstats[2], Ztest.col(npatch) , bias[2] );
+                if (scoretwo > scoreone){maxim = 2;}
+                double scorezero = mahanobianscore(classstats[0], Ztest.col(npatch) , bias[0] );
+                if (scorezero > scoreone && scorezero > scoretwo){maxim = 0;}
+            }
             conf[test_data[npatch].label][maxim]++;
         }
 
