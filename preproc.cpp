@@ -94,7 +94,7 @@ int main() {
         
         int n_show = min(3, (int)eigkept.eigvects.cols());
         for (int n = 0; n < n_show; n++) {
-            VectorXf v = eigkept.eigvects.col(eigkept.eigvects.cols() - 1 - n).cwiseAbs();
+            VectorXf v = eigkept.eigvects.col(eigkept.eigvects.cols() - 1 - n);
             float hi = v.maxCoeff();
 
             vector<unsigned char> img(v.size());
