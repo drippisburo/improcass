@@ -95,11 +95,11 @@ int main() {
         int n_show = min(3, (int)eigkept.eigvects.cols());
         for (int n = 0; n < n_show; n++) {
             VectorXf v = eigkept.eigvects.col(eigkept.eigvects.cols() - 1 - n);
-            float hi = v.maxCoeff();
+            float hi = v.cwiseAbs().maxCoeff();                    
 
             vector<unsigned char> img(v.size());
             for (int i = 0; i < v.size(); i++) {
-                img[i] = (unsigned char)(v(i) / hi * 255.0f);
+                img[i] = (unsigned char)(127.5f + 127.5f * v(i) / hi);    
             }
             makeimage(img.data(), size, size, ("eigenvector_top_" + to_string(f) + "_" + to_string(n + 1) + ".png").c_str());
             
